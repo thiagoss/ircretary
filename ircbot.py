@@ -69,6 +69,16 @@ class Bot(Component):
                 f = getattr(p, name)
                 f(parameters)
 
+class Output:
+    def __init__(self, bot, channel):
+        self.bot = bot
+        self.channel = channel
+
+    def write(self, msg, channel=None):
+        if channel == None:
+            channel = self.channel
+        self.bot.push(Message(channel, msg))
+
 
 if __name__=="__main__":
     import properties_manager
