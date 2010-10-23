@@ -51,11 +51,13 @@ class Bot(Component):
         nick = source[0]
         channel = message[1]
         msg = message[2]
+        output = Output(self, channel)
 
         parameters = {}
         parameters['user'] = nick
         parameters['channel'] = channel
         parameters['msg'] = msg
+        parameters['output'] = output
         for log_plugin in self._log_plugins:
             log_plugin.message(parameters)
 
