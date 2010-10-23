@@ -12,7 +12,8 @@ class LogPlugin(object):
 
 class Romeryto(LogPlugin):
     def respond(self):
-        return 0 == random.randint(0, 0.5 * 100)
+        # bigger the range, smaller the chance
+        return 0 == random.randint(0, 0.9 * 100)
 
     def randResponse(self, data):
         responses = ['Concordo plenamente', 'Parabens %s' % data['user'],
