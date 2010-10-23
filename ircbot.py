@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import twitter
 from circuits import Component, Debugger
 from circuits.net.sockets import TCPClient, Connect
 from circuits.net.protocols.irc import IRC, Message, User, Nick, Join
@@ -12,6 +11,24 @@ class Bot(Component):
         self += TCPClient(channel=channel) + IRC(channel=channel)
         self.push(Connect(host, port), "connect")
         self.count = 0
+
+        self._cmd_plugins = {}
+        self._log_plugins = []
+
+    def registerPlugin(self, plugin):
+        if plugin.getType() == 'command':
+            commandList = plugin.getCommands()
+            for c in commandList:
+                self._addCmdPlugin(c, plugin)
+        elif plugin.getType() == 'log':
+            self._log_plugins.append(plugin)
+        else:
+            raise exception, "Unknown plugin type %s" % str(plugin.getType())
+
+    def _addCmdPlugin(self, cmd, plugin):
+        if cmd not in self._cmd_plugins.keys():
+            self._cmd_plugins[cmd] = []
+        self._cmd_plugins[cmd].append(plugin)
 
     def connected(self, host, port):
         self.push(User("tuite", host, host, "tuitador"), "USER")
