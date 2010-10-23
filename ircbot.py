@@ -6,10 +6,16 @@ from circuits.net.protocols.irc import IRC, Message, User, Nick, Join
 
 class Bot(Component):
 
-    def __init__(self, host, port=6667, channel=None):
+    def __init__(self, properties):
+        self.server = properties['server']
+        self.port = properties.get('port', 6667)
+        self.nick = properties.get('nick', 'romeryto')
+        self.my_channels = properties.get('channels')
+        self.welcome_message = properties.get('welcome_msg', 'Oie')
+        channel = 'bot'
         super(Bot, self).__init__(channel=channel)
         self += TCPClient(channel=channel) + IRC(channel=channel)
-        self.push(Connect(host, port), "connect")
+        self.push(Connect(self.server, int(self.port)), "connect")
         self.count = 0
 
         self._cmd_plugins = {}
@@ -31,10 +37,14 @@ class Bot(Component):
         self._cmd_plugins[cmd].append(plugin)
 
     def connected(self, host, port):
-        self.push(User("tuite", host, host, "tuitador"), "USER")
-        self.push(Nick("tuite"), "NICK")
-        self.push(Join('#embedded-ufcg'), "JOIN")
-
+        self.push(User(self.nick, host, host, "tuitador"), "USER")
+        self.push(Nick(self.nick), "NICK")
+        for channel in self.my_channels:
+            self.push(Join(channel), "JOIN")
+            self.push(Message(channel, self.welcome_message), "PRIVMSG")
+            
+        
+         
     def numeric(self, source, target, numeric, args, message):
         if numeric == 433:
             self.push(Nick("%s_" % self("getNick")), "NICK")
@@ -42,5 +52,11 @@ class Bot(Component):
     def message(self, source, target, message):
         pass
 
-bot = Bot("irc.freenode.net", channel="bot") + Debugger()
-bot.run()
+
+if __name__=="__main__":
+    import properties_manager
+    properties = properties_manager.get_properties()
+    
+    bot = Bot(properties) + Debugger()
+    #bot = Bot()
+    bot.run()
