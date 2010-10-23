@@ -1,6 +1,13 @@
 #from core import CommandPlugin
 
-class CommandPlugin(object): pass
+class CommandPlugin(object):
+
+    def getType(self):
+        return 'command'
+
+    def getCommands(self):
+        return []
+
 
 
 doEcho = lambda ins, d: d['message']

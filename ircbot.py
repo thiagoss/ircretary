@@ -42,15 +42,32 @@ class Bot(Component):
         for channel in self.my_channels:
             self.push(Join(channel), "JOIN")
             self.push(Message(channel, self.welcome_message), "PRIVMSG")
-            
-        
-         
+
     def numeric(self, source, target, numeric, args, message):
         if numeric == 433:
             self.push(Nick("%s_" % self("getNick")), "NICK")
 
     def message(self, source, target, message):
-        pass
+        nick = source[0]
+        channel = message[1]
+        msg = message[2]
+
+        parameters = {}
+        parameters['user'] = nick
+        parameters['channel'] = channel
+        parameters['msg'] = msg
+        for log_plugin in self._log_plugins:
+            log_plugin.message(parameters)
+
+        #parse message for commands
+        if msg.startswith('!'):
+            tokens = msg.split(' ')
+            name = tokens[0][1:]
+            parameters['msg'] = ' '.join(tokens[1:])
+            plugins = self._cmd_plugins[name]
+            for p in plugins:
+                f = getattr(p, name)
+                f(parameters)
 
 
 if __name__=="__main__":
