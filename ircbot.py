@@ -56,7 +56,7 @@ class Bot(Component):
         parameters = {}
         parameters['user'] = nick
         parameters['channel'] = channel
-        parameters['msg'] = msg
+        parameters['message'] = msg
         parameters['output'] = output
         for log_plugin in self._log_plugins:
             log_plugin.message(parameters)
