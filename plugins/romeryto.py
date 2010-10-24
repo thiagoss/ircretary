@@ -24,19 +24,3 @@ class Romeryto(LogPlugin):
     def log(self, data):
         if self.respond():
             data['output'].write(self.randResponse(data), data['channel'])
-
-
-class Output:
-
-    def write(self, msg, channel=''):
-        print '%s: %s' % (channel, msg)
-
-
-if __name__ == '__main__':
-    homer = Romeryto()
-
-    for i in range(100):
-        homer.log({'message': 'python é muito legal',
-                   'user': 'dieb',
-                   'output': Output(),
-                   'channel': '#ufcg'})
