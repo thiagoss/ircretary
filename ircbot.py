@@ -49,8 +49,8 @@ class Bot(Component):
 
     def message(self, source, target, message):
         nick = source[0]
-        channel = message[1]
-        msg = message[2]
+        channel = str(target)
+        msg = str(message)
         output = Output(self, channel)
 
         parameters = {}
@@ -79,13 +79,17 @@ class Output:
     def write(self, msg, channel=None):
         if channel == None:
             channel = self.channel
-        self.bot.push(Message(channel, msg))
+        self.bot.push(Message(channel, msg), 'PRIVMSG')
 
 
 if __name__=="__main__":
+    from plugins import romeryto
     import properties_manager
+
     properties = properties_manager.get_properties()
-    
-    bot = Bot(properties) + Debugger()
+    bot = Bot(properties)
+    bot.registerPlugin(romeryto.Romeryto())
+    bot += Debugger()
+
     #bot = Bot()
     bot.run()
