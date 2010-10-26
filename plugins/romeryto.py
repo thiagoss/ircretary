@@ -16,10 +16,13 @@ class Romeryto(LogPlugin):
         return 0 == random.randint(0, 10)
 
     def randResponse(self, data):
-        responses = ['Concordo plenamente', 'Parabens %s' % data['user'],
-                     'Otima analise %s' % data['user'],
+        responses = ['Concordo plenamente.', 'Parabéns %s' % data['user'],
+                     'Ótima análise, %s' % data['user'],
                      'Obrigado pela A atenção',
-                     '%s: e voce se orgulha disso?' % data['user']]
+                     '%s: e voce se orgulha disso?' % data['user'],
+                     'Era exatamente o que eu ia dizer, %s' % data['user'],
+                     '%s, tirou as palavras da minha boca!' % data['user'],
+                     'Te amo minha Driihhh!']
         return responses[random.randint(0, len(responses) - 1)]
 
     def message(self, data):
